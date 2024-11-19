@@ -18,8 +18,10 @@ export class Character {
     public get name(): string {
         return this._name
     }
-
-
+    
+    public set name(value: string) {
+        this._name = value;
+    }
     public get level(): number {
         return this._level
     }
@@ -68,7 +70,13 @@ export class Character {
             console.log(`${item} no encontrado en el inventario.`);
         }
     }
-    
+    private set experience(value: number) {
+        if (value >= 0) {
+            this._experience = value;
+        } else {
+            console.log("La experiencia no puede ser negativa.");
+        }
+    }
     win(mission: Mission): void {
         const winExperience = mission.getExperienceReward();  
         this._experience += winExperience;
