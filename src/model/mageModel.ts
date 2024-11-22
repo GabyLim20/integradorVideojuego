@@ -1,22 +1,17 @@
 import { Character as rol} from "./characterModel";
 export class Mage extends rol{
-    private _magic: number;
+    private _magic: string[];;
     private _mana: number
-    constructor(name: string, level: number, health: number, experience: number,magic:number,mana: number) {
-        super(name, level, health, experience); 
+    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [],magic:string[] = [],mana: number) {
+        super(name, level, health, experience,inventory); 
         this._magic = magic;
         this._mana = mana
     }
-    public get magic():number{
+    public get magic():string[] {
         return this._magic
     }
-    public set magic(value: number){
-        if (value <=0) {
-            console.log("Error no puedes ausar la magía menor a 0 🪄");
-        } else{
-            console.log("🔮");
-            this._magic = value;
-        }
+    addMagic(item: string): void {
+        this._magic.push(item);
     }
     public get mana():number{
         return this._mana

@@ -2,8 +2,8 @@ import { Character as rol} from "./characterModel";
 export class Warrior extends rol{
     private _attack: number;  
     private _defense: number;
-    constructor(name: string, level: number, health: number, experience: number, attack: number,defense:number) {
-        super(name, level, health, experience); 
+    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [], attack: number,defense:number) {
+        super(name, level, health, experience,inventory); 
         this._attack = attack;
         this._defense = defense
     }

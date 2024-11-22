@@ -7,12 +7,12 @@ export class Character {
     private _experience: number;
     private _inventory: string[];
 
-    constructor(name: string, level: number, health: number, experience: number) {
+    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = []) {
         this._name = name;
         this._level = level;
         this._health = health;
         this._experience = experience;
-        this._inventory = []
+        this._inventory = inventory
     }
 
     public get name(): string {
