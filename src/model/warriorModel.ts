@@ -28,9 +28,6 @@ export class Warrior extends rol{
             this._attack = value;
         }
     }
-    public getDetails(): string {
-        return `${super.getDetails()}, Attack: ${this._attack}, Defense: ${this._defense}`;
-    }
     public completeMission(missionType: string): void {
         console.log(`${this.name} ha completado una misión de tipo ${missionType}`);
     }

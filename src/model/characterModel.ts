@@ -6,6 +6,8 @@ export class Character {
     private _health: number;
     private _experience: number;
     private _inventory: string[];
+    
+    
 
     constructor(name: string, level: number, health: number, experience: number,inventory:string[] = []) {
         this._name = name;
@@ -34,11 +36,17 @@ export class Character {
    }
 
     public get health(): number {
-        return this._health
+        if (this._health < 50) {
+            console.log("Alerta: tu salud está por debajo del 50%");
+        } else if (this._health <= 0) {
+            console.log("¡Estás muerto!");
+        }
+        return this._health;
     }
     set health(value: number) {
         if (value < 0) {
-            console.log("Ya no tienes vida ☠️  ");
+            console.log("¡No puedes tener una salud negativa! ☠️  ");
+
         } else if(value <50){
             console.log("Te queda menos del 50% de tu vida🪫");
         }else {
@@ -54,21 +62,12 @@ export class Character {
     public get inventory(): string[] {
         return this._inventory;
     }
-
-    getDetails(): string {
-        return `${this.name} (Level ${this.level})\n Health: ${this.health}\n Experience: ${this.experience}\n [${this.inventory}]`;
+    public set inventory(value: string[]) {
+        this._inventory = value;
     }
+    
     addInventory(item: string): void {
         this._inventory.push(item);
-    }
-    removeInventory(item: string): void {
-        const index = this._inventory.indexOf(item);
-        if (index >= 0) {
-            this._inventory.splice(index, 1);
-            console.log(`${item} eliminado del inventario.`);
-        } else {
-            console.log(`${item} no encontrado en el inventario.`);
-        }
     }
     private set experience(value: number) {
         if (value >= 0) {

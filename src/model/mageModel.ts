@@ -13,6 +13,7 @@ export class Mage extends rol{
     addMagic(item: string): void {
         this._magic.push(item);
     }
+    
     public get mana():number{
         return this._mana
     }
