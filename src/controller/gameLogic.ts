@@ -26,7 +26,6 @@ function createCharacter(
             newCharacter.name = name;
             newCharacter.level = level;
             newCharacter.health = health;
-            inventory.forEach(item => newCharacter.addInventory(item));
             charactersList.push(newCharacter);
             return newCharacter;
         case 2:
@@ -44,7 +43,6 @@ function createCharacter(
             const manaCalled = parseInt(readline.question("¿Cuánto mana tiene tu personaje?") || "100");
             const NewMage = new Mage(name, level, health, experience, inventory, magicPower, manaCalled);
             charactersList.push(NewMage);
-            magicPower.forEach(item => NewMage.addMagic(item));
             NewMage.mana = manaCalled;
             return NewMage;
         default:
