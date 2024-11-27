@@ -2,6 +2,7 @@ import { read } from "fs";
 import { Character, Character as rol } from "../model/characterModel";
 import { Mage } from "../model/mageModel";
 import { Warrior } from "../model/warriorModel";
+import { Mission } from "../model/missionModel";
 const readline = require("readline-sync");
 /*Crea la función createCharacter en un archivo (por ejemplo, gameLogic.ts) que reciba
 parámetros como name, level y health para crear un nuevo personaje. */
@@ -171,5 +172,17 @@ function showMenu():any {
     } while (option !== "5");
 }
 showMenu();
+
+function assignMission(mission:Mission,name:string){
+    let index = charactersList.findIndex(character => 
+        character.name.trim().toLowerCase() === name.trim().toLowerCase()
+    );
+    if (index !== -1) {
+        let description = readline.question("¿Cuál es el nombre? ");
+        let difficult = parseFloat(readline.question("¿Cuál es el nivel? "));
+        let reward = readline.question("¿Cuál es el nivel de vida? "); 
+
+    }
+} 
 
 
