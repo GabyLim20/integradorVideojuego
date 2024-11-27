@@ -96,6 +96,33 @@ function updateCharacter(name:string, update: Character):void {
         console.log(`Personaje con el nombre ${name} no encontrado.`);
     }  
 }
+function updateCharacter1(name:string,value:string,update: Character):void{
+    let index = charactersList.findIndex(character => 
+        character.name.trim().toLowerCase() === name.trim().toLowerCase()
+    );
+    if (index !== -1) {
+        const character = charactersList[index];
+        switch (value) {
+            case "1":
+                if (update.name) character.name = update.name;
+                break;
+            case "2":
+                if (update.level) character.level = update.level;
+                break;
+            case "3":
+                if (update.health) character.health = update.health;
+                break;
+            case "4":
+                if (update.inventory) character.inventory = update.inventory;
+            break;
+            default:
+                break;
+        }console.log(`Personaje ${name} actualizado correctamente.`);
+    } else {
+        console.log(`Personaje con el nombre ${name} no encontrado.`);
+    }  
+
+}
 
 
 
@@ -127,6 +154,7 @@ function showMenu():any {
         console.log("2. Listar personajes");
         console.log("3. Actualizar personaje");
         console.log("4. Eliminar personaje");
+        console.log("3. Actualizar personaje");
         console.log("5. Salir");
 
         option = readline.question("Elige una opción: ");
@@ -164,6 +192,22 @@ function showMenu():any {
                 deleteCharacter(deleteByName);
                 break;
             case "5":
+                let search = readline.question("¿Cuál es el nombre del personaje ha eliminar? ");
+                let found = readline.question("¿Que quieres editar\n 1. Nombre\n 2. Nivel\n 3. Vida\n 4. Inventario ");
+                let updatedCharacter1 = createCharacter(
+                    searchByName, 
+                    parseInt(readline.question("Nuevo nivel: ")),  
+                    parseInt(readline.question("Nueva salud: ")), 
+                    parseInt(readline.question("Nueva experiencia: ")), 
+                    []  
+                );
+                if (updatedCharacter1) {
+                    updateCharacter1(search, found,updatedCharacter1);
+                } else {
+                    console.log("Error al crear el personaje. No se pudo actualizar.");
+                }
+                break;
+            case "6":
                 console.log("Saliendo...");
                 break;
             default:
@@ -177,12 +221,16 @@ function assignMission(mission:Mission,name:string){
     let index = charactersList.findIndex(character => 
         character.name.trim().toLowerCase() === name.trim().toLowerCase()
     );
+    let character = charactersList[index];
     if (index !== -1) {
-        let description = readline.question("¿Cuál es el nombre? ");
-        let difficult = parseFloat(readline.question("¿Cuál es el nivel? "));
-        let reward = readline.question("¿Cuál es el nivel de vida? "); 
-
+        let description = readline.question("¿Cuál es la descripción de la misión? ");
+        let difficult = parseFloat(readline.question("¿Cuál es la dificultad? "));
+        let reward = readline.question("¿Cuánta recompensa?");
     }
 } 
+
+function mixMission(mission:Mission){
+
+}
 
 

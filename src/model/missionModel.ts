@@ -48,14 +48,26 @@ export class Mission {
             this._reward = value;
         }
     }
+    getMissionAleator():void{
+        let descriptions: string[] = [
+            "Ve a "
+        ]
+        const i = Math.floor(Math.random() * descriptions.length);
+        this.description = descriptions[i];
+        if (this.difficulty <= 3){
+            return
+            
+        }
+
+    }
     getExperienceReward(): number {
         switch (this.type) {
             case MissionType.Main:
-                return this.reward * 2;  
+                return this.reward * 2 * this.difficulty;  
             case MissionType.Side:
-                return this.reward;  
+                return this.reward * this.difficulty;  
             case MissionType.Event:
-                return this.reward * 4;  
+                return this.reward * 4 * this.difficulty;  
             default:
                 return 0;
         }

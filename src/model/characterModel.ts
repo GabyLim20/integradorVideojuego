@@ -69,13 +69,14 @@ export class Character {
     addInventory(item: string): void {
         this._inventory.push(item);
     }
-    private set experience(value: number) {
+    public set experience(value: number) {
         if (value >= 0) {
             this._experience = value;
         } else {
             console.log("La experiencia no puede ser negativa.");
         }
     }
+    
     win(mission: Mission): void {
         const winExperience = mission.getExperienceReward();  
         this._experience += winExperience;
