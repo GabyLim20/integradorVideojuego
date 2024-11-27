@@ -43,17 +43,12 @@ export class Character {
         }
         return this._health;
     }
-    set health(value: number) {
-        if (value < 0) {
-            console.log("¡No puedes tener una salud negativa! ☠️  ");
-
-        } else if(value <50){
-            console.log("Te queda menos del 50% de tu vida🪫");
-        }else {
-            console.log("Tienes más del 50% de vida 🔋");
-            this._health = value;
-        }
-    }
+    public set health(value: number) { 
+        if (value < 0) { 
+            console.log("¡No puedes tener una salud negativa! ☠️"); 
+        } else if (value < 50) { 
+            console.log("Te queda menos del 50% de tu vida🪫"); 
+        } else { console.log("Tienes más del 50% de vida 🔋"); } this._health = value; }
 
     public get experience(): number {
         return this._experience
