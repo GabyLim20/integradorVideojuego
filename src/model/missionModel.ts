@@ -50,14 +50,44 @@ export class Mission {
     }
     getMissionAleator():void{
         let descriptions: string[] = [
-            "Ve a "
+            "Encuentra a la reina",
+            "Busca y recupera el anillo poderoso",
+            "Protege al pueblo",
+            "Recupera el artefacto perdido"
+
         ]
-        const i = Math.floor(Math.random() * descriptions.length);
-        this.description = descriptions[i];
-        if (this.difficulty <= 3){
-            return
+        let descriptionsSide: string[] = [
+            "Repara el puente de la aldea",
+            "Investigar antiguas ruinas para descubrir los tesoros ocultos",
+            "Recolecta suministros para el aldea",
+            "Captura a el bandido buscado"
             
+        ]
+        let descriptionsEvent: string[] = [
+            "Encuentra los huevos de pascua",
+            "Recoge frutas mágicas durante la luna llena",
+            "Construye un altar en el Festival de la Cosecha",
+            "Búsqueda de reliquias para el Día de los Muertos"
+        ]
+        let value:string = "";
+        if (this._type === MissionType.Main) {
+            value = descriptions[Math.floor(Math.random() * descriptions.length)];
+        }else if (this._type === MissionType.Side) {
+            value = descriptions[Math.floor(Math.random() * descriptionsSide.length)];
+        }else if(this._type === MissionType.Event) {
+            value = descriptions[Math.floor(Math.random() * descriptionsEvent.length)];
+        }else {
+            throw  Error("Tipo de misión no válido.");
         }
+        if (this._difficulty <= 3) {
+            console.log("Misión fácil asignada");
+        } else if (this._difficulty <= 6) {
+            console.log("Misión de dificultad media asignada");
+        } else {
+            console.log("Misión difícil asignada");
+        }
+
+        this.description = value;
 
     }
     getExperienceReward(): number {

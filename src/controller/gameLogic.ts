@@ -192,22 +192,6 @@ function showMenu():any {
                 deleteCharacter(deleteByName);
                 break;
             case "5":
-                let search = readline.question("¿Cuál es el nombre del personaje ha eliminar? ");
-                let found = readline.question("¿Que quieres editar\n 1. Nombre\n 2. Nivel\n 3. Vida\n 4. Inventario ");
-                let updatedCharacter1 = createCharacter(
-                    searchByName, 
-                    parseInt(readline.question("Nuevo nivel: ")),  
-                    parseInt(readline.question("Nueva salud: ")), 
-                    parseInt(readline.question("Nueva experiencia: ")), 
-                    []  
-                );
-                if (updatedCharacter1) {
-                    updateCharacter1(search, found,updatedCharacter1);
-                } else {
-                    console.log("Error al crear el personaje. No se pudo actualizar.");
-                }
-                break;
-            case "6":
                 console.log("Saliendo...");
                 break;
             default:
