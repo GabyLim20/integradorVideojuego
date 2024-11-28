@@ -70,12 +70,17 @@ export class Mission {
             "Búsqueda de reliquias para el Día de los Muertos"
         ]
         let value:string = "";
+        let  difficult:number = Math.floor(Math.random() * 8) + 1;
+
         if (this._type === MissionType.Main) {
             value = descriptions[Math.floor(Math.random() * descriptions.length)];
+            this.reward = 3;
         }else if (this._type === MissionType.Side) {
             value = descriptions[Math.floor(Math.random() * descriptionsSide.length)];
+            this.reward = 2;
         }else if(this._type === MissionType.Event) {
             value = descriptions[Math.floor(Math.random() * descriptionsEvent.length)];
+            this.reward = 1;
         }else {
             throw  Error("Tipo de misión no válido.");
         }
@@ -88,6 +93,7 @@ export class Mission {
         }
 
         this.description = value;
+        this.difficulty = difficult;
 
     }
     getExperienceReward(): number {
