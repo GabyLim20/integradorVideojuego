@@ -71,7 +71,7 @@ export class Mission {
         ]
         let value:string = "";
         let  difficult:number = Math.floor(Math.random() * 8) + 1;
-
+        
         if (this._type === MissionType.Main) {
             value = descriptions[Math.floor(Math.random() * descriptions.length)];
             this.reward = 3;

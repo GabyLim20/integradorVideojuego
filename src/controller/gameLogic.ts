@@ -201,13 +201,14 @@ function showMenu():any {
 }
 showMenu();
 
-function assignMission(mission:type,name:string){
-    /*let index = charactersList.findIndex(character => 
-        character.name.trim().toLowerCase() === name.trim().toLowerCase()
-    );*/
-    let foudName = charactersList.find(names => names.name === name)
+function assignMission(name:string,missionType:type){
+    let foudName = charactersList.find(names => names.name === name);
+    let mision = new Mission("",missionType,0,0,);
     if (foudName) {
-        prompt("Que tipo de mision deseas?\n")
+        let mission = prompt("Que tipo de mision deseas?(Main, Side, Event)\n") 
+        if (mission === Object.values(MissionType)) {
+            Mis
+        }
     }
     
 } 
