@@ -85,11 +85,11 @@ export class Mission {
             throw  Error("Tipo de misión no válido.");
         }
         if (this._difficulty <= 3) {
-            console.log("Misión fácil asignada");
+            console.log(`Misión fácil asignada al evento ${this.type}`);
         } else if (this._difficulty <= 6) {
-            console.log("Misión de dificultad media asignada");
+            console.log(`Misión de dificultad media asignada al evento ${this.type}`);
         } else {
-            console.log("Misión difícil asignada");
+            console.log(`Misión difícil asignada al evento ${this.type}`);
         }
 
         this.description = value;
