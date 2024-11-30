@@ -8,8 +8,6 @@ export class Character {
     private _inventory: string[];
     private _missions: string [];
     
-    
-
     constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [],missions:string[] = []) {
         this._name = name;
         this._level = level;

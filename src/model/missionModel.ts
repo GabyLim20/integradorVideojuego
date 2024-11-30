@@ -4,7 +4,6 @@ export enum MissionType {
     Event = "Event"
 }
 
-
 export class Mission {
     private _description: string;
     private _difficulty: number;
@@ -91,7 +90,6 @@ export class Mission {
         } else {
             console.log(`Misión difícil asignada al evento ${this.type}`);
         }
-
         this.description = value;
         this.difficulty = difficult;
 

@@ -1,10 +1,8 @@
 import { Character, Character as rol } from "../model/characterModel";
 import { Mage } from "../model/mageModel";
 import { Warrior } from "../model/warriorModel";
-import { Mission,MissionType as type } from "../model/missionModel";
+import { Mission, MissionType as type } from "../model/missionModel";
 const readline = require("readline-sync");
-/*Crea la función createCharacter en un archivo (por ejemplo, gameLogic.ts) que reciba
-parámetros como name, level y health para crear un nuevo personaje. */
 let charactersList: rol[] = [];
 
 function createCharacter(
@@ -16,14 +14,11 @@ function createCharacter(
 ): rol | void {
     let index = charactersList.findIndex(character => character.name.trim().toLowerCase() === name.trim().toLowerCase());
     if (index !== -1) { console.log(`Personaje con el nombre ${name} ya existe.`); return; }
-
     let item = parseInt(readline.question("¿Quieres que el personaje sea? \n 1- General\n 2- Warrior\n 3- Mage\n"));
     let character: Character;
-
     switch (item) {
         case 1:
             const newCharacter = new rol(name, level, health, experience, inventory);
-
             newCharacter.name = name;
             newCharacter.level = level;
             newCharacter.health = health;
@@ -42,7 +37,7 @@ function createCharacter(
             const items = readline.question("¿Cuál(es) su poder magico? (separados por coma) ");
             const magicPower: string[] = items.split(",").map((item: string) => item.trim());
 
-            let manaCalled = parseInt(readline.question("¿Cuánto mana tiene tu personaje?") );
+            let manaCalled = parseInt(readline.question("¿Cuánto mana tiene tu personaje?"));
             manaCalled = validation(manaCalled)
             const NewMage = new Mage(name, level, health, experience, inventory, magicPower, manaCalled);
             charactersList.push(NewMage);
@@ -62,7 +57,6 @@ function listCharacters(): void {
         console.log("No hay personajes creados.");
         return;
     }
-
     console.log("Lista de personajes:");
     charactersList.forEach((character, index) => {
         console.log(`\nPersonaje ${index + 1}:`);
@@ -81,27 +75,23 @@ function listCharacters(): void {
         }
         console.log('------------------------');
     });
-
 }
 
 function updateCharacter(name: string, update: Character): void {
     let index = charactersList.findIndex(character =>
         character.name.trim().toLowerCase() === name.trim().toLowerCase()
     );
-
     if (index !== -1) {
         let character = charactersList[index];
         if (update.name) character.name = update.name;
         if (update.level) character.level = update.level;
         if (update.health) character.health = update.health;
         if (update.inventory) character.inventory = update.inventory;
-        
         console.log(`Personaje ${name} actualizado correctamente.`);
     } else {
         console.log(`Personaje con el nombre ${name} no encontrado.❌`);
     }
 }
-
 
 function deleteCharacter(name: string): Character | void {
     let indexOf = charactersList.findIndex(character =>
@@ -122,7 +112,6 @@ function deleteCharacter(name: string): Character | void {
     }
 }
 
-
 function showMenu(): any {
     let option: string;
     do {
@@ -133,10 +122,7 @@ function showMenu(): any {
         console.log("4. Eliminar personaje");
         console.log("5. Asignar Misión");
         console.log("6. Salir");
-
         option = readline.question("Elige una opción: ");
-
-
         switch (option) {
             case "1":
                 let name = readline.question("¿Cuál es el nombre? ");
@@ -163,7 +149,6 @@ function showMenu(): any {
                             parseInt(readline.question("Nueva salud: ")),
                             readline.question("Nuevo inventario (separados por coma): ").split(',')
                         )
-                        
                     );
                 } else {
                     console.log(`Personaje con el nombre ${nameSearch} no encontrado.❌`);
@@ -173,48 +158,41 @@ function showMenu(): any {
                 let deleteByName = readline.question("¿Cuál es el nombre del personaje ha eliminar?😵 ");
                 deleteCharacter(deleteByName);
                 break;
-            
             case "5":
                 let nameAsign = readline.question("¿Cuál es el nombre? 🔍 ");
-
-                let mission = readline.question("¿Qué tipo de mision deseas?🚀(Main, Side, Event)\n") 
-                assignMission(nameAsign,mission);
+                let mission = readline.question("¿Qué tipo de mision deseas?🚀(Main, Side, Event)\n")
+                assignMission(nameAsign, mission);
             case "6":
-            console.log("Saliendo...");
-            break;
+                console.log("Saliendo...");
+                break;
             default:
                 console.log("Opción no válida ❌, por favor elige nuevamente.🤔");
         }
     } while (option !== "6");
 }
-showMenu();
+
 function validation(value: number) {
     while (value <= 0 || isNaN(value)) {
         console.log("El valor no puede ser 0 o estas usando letras, por favor ingresa un valor mayor.");
         value = parseInt(readline.question("¿Cuál sería el valor del personaje? "));
     }
     return value;
-
 }
 
-function assignMission(name:string,missionType:type):void{
+function assignMission(name: string, missionType: type): void {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
     if (foudName) {
-        if (Object.values(type).includes(missionType)) 
-            {
-                let newMission = new Mission("", missionType, 0, 0);
-                newMission.getMissionAleator();
-                foudName.missions.push(newMission.description)
-                console.log(`${foudName.name} se te otorgo la misión: ${newMission.description} 🧩`);
-            } else {
-                console.log("Tipo de misión no válido.🚨");
-            }
+        if (Object.values(type).includes(missionType)) {
+            let newMission = new Mission("", missionType, 0, 0);
+            newMission.getMissionAleator();
+            foudName.missions.push(newMission.description)
+            console.log(`${foudName.name} se te otorgo la misión: ${newMission.description} 🧩`);
         } else {
-            console.log("No se encontró el personaje con el nombre proporcionado.🚨");
-        
+            console.log("Tipo de misión no válido.🚨");
+        }
+    } else {
+        console.log("No se encontró el personaje con el nombre proporcionado.🚨");
     }
-    
-} 
+}
 
-
-
+showMenu();
