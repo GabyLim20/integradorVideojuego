@@ -6,15 +6,17 @@ export class Character {
     private _health: number;
     private _experience: number;
     private _inventory: string[];
+    private _missions: string [];
     
     
 
-    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = []) {
+    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [],missions:string[] = []) {
         this._name = name;
         this._level = level;
         this._health = health;
         this._experience = experience;
-        this._inventory = inventory
+        this._inventory = inventory;
+        this._missions = missions
     }
 
     public get name(): string {
@@ -60,17 +62,24 @@ export class Character {
     public set inventory(value: string[]) {
         this._inventory = value;
     }
+    public get missions(): string[] {
+        return this._missions;
+    }
+    public set missions(value: string[]) {
+        this._missions = value;
+    }
     
     addInventory(item: string): void {
         this._inventory.push(item);
     }
-    private set experience(value: number) {
+    public set experience(value: number) {
         if (value >= 0) {
             this._experience = value;
         } else {
             console.log("La experiencia no puede ser negativa.");
         }
     }
+    
     win(mission: Mission): void {
         const winExperience = mission.getExperienceReward();  
         this._experience += winExperience;
