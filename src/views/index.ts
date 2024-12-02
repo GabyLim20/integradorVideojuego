@@ -1,5 +1,5 @@
 import { Character, Character as rol } from "../model/characterModel";
-import { createCharacter,listCharacters,updateCharacter,deleteCharacter,assignMission,showMissions,completeMission2 } from "../controller/gameLogic";
+import { createCharacter,listCharacters,updateCharacter,deleteCharacter,assignMission,showMissions,completeMission } from "../controller/gameLogic";
 const readline = require("readline-sync");
 let charactersList: rol[] = [];
 
@@ -56,7 +56,7 @@ function showMenu(): any {
             let nameFound = readline.question("¿Cuál es el nombre? 🔍 ");
             showMissions(nameFound);
             let id = readline.question("¿Cuál es el la misión que deseas completar(Ingresa el número)? 🔍 ");
-            completeMission2(nameFound,id)
+            completeMission(nameFound,id)
                 break;
             case "7":
             let nameM = readline.question("¿Cuál es el nombre? 🔍 ");

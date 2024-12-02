@@ -135,7 +135,7 @@ export function assignMission(name: string, missionType: type): void {
     }
 }
 
-function completeMission(name: string,id:number) {
+function completeMissions(name: string,id:number) {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());    
     if (foudName) {
         let mission = foudName.missions[id - 1]; 
@@ -150,7 +150,7 @@ function completeMission(name: string,id:number) {
     };
 }
 
-export function completeMission2(name: string, id: number) {
+export function completeMission(name: string, id: number) {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
     if (foudName) {
         let mission = foudName.missions[id - 1];
@@ -208,9 +208,7 @@ async function battle(character: Warrior | Mage, enemy: Warrior | Mage): Promise
           console.log(`¡${enemy.name} ha sido derrotado!`);
           break; 
         }
-  
         await new Promise(resolve => setTimeout(resolve, 1000));
-  
         console.log("\nTurno del enemigo:");
         if (enemy instanceof Warrior && character instanceof Mage) {
           enemy.attackEnemy(character); 
