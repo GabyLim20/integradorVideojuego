@@ -3,7 +3,9 @@ import { Mage } from "../model/mageModel";
 import { Warrior } from "../model/warriorModel";
 import { Mission, MissionType as type } from "../model/missionModel";
 const readline = require("readline-sync");
-let charactersList: rol[] = [];
+const charactersList: rol[] = [];
+const mageList: Mage[] = [];
+const warriorList: Warrior[] = [];
 
 export function createCharacter(
     name: string,
@@ -32,12 +34,14 @@ export function createCharacter(
             NewWarrior.attack = attackCalled;
             NewWarrior.defense = defenseCalled
             charactersList.push(NewWarrior);
+            warriorList.push(NewWarrior)
             return NewWarrior;
         case 3:
             let manaCalled = parseInt(readline.question("¿Cuánto mana tiene tu personaje?"));
             manaCalled = validation(manaCalled)
             const NewMage = new Mage(name, level, health, experience, [], inventory, manaCalled);
             charactersList.push(NewMage);
+            mageList.push(NewMage);
             NewMage.mana = manaCalled;
             return NewMage;
         default:
@@ -45,6 +49,7 @@ export function createCharacter(
             return error;
     }
     charactersList.push(character);
+    
     return character;
 
 }
@@ -164,7 +169,38 @@ export function completeMission(name: string, id: number) {
             if (enemy) {
                 mission.getAleatoryWin(foudName);
             } else {
-                completeMission(foudName.name,id)
+                completeMissions(foudName.name,id)
+            }
+        } else {
+            console.log(`No se encontró la misión con el item: ${id}.`);
+        }
+    } else {
+        console.log("No se encontró el personaje con el nombre proporcionado.🚨");
+    }
+}
+export function completeMission2(name: string, id: number) {
+    let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
+    
+    if (foudName) {
+        let mission = foudName.missions[id - 1];
+        if (mission) {
+            let enemy: Warrior | Mage | undefined;
+            /*if (mageList.length === 0 || warriorList.length === 0) {
+                console.log("No hay contrincantes disponibles. Avanzando a completar la misión.");
+                completeMissions(foudName.name, id); 
+                return; 
+            }*/
+            if (foudName instanceof Warrior) {
+                enemy = mageList[Math.floor(Math.random() * mageList.length)];
+            } 
+            else if (foudName instanceof Mage) {
+                enemy = warriorList[Math.floor(Math.random() * warriorList.length)];
+            }
+            if (enemy) {
+                mission.getAleatoryWin(foudName);
+            } else {
+                console.log("No hay contrincantes disponibles. Avanzando a completar la misión.");
+                completeMissions(foudName.name, id); 
             }
         } else {
             console.log(`No se encontró la misión con el item: ${id}.`);
@@ -217,7 +253,10 @@ async function battle(character: Warrior | Mage, enemy: Warrior | Mage): Promise
         }
           if (character.health <= 0) {
           console.log(`¡${character.name} ha sido derrotado!`);
+          character.lose
           break; 
+        } else{
+            character.win
         }
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
@@ -230,13 +269,13 @@ async function giveReward(character: Warrior | Mage): Promise<void> {
     try {
       console.log('¡Recibiendo recompensa...');
       await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log(`¡${character.name} ha recibido 50 puntos de experiencia y 10 monedas de oro!`);
+      console.log(`¡${character.name} ha recibido 10 puntos de experiencia!`);
       character.experience+= 10; 
     } catch (error) {
       console.error('Error al otorgar la recompensa:', error);
     }
   }
-  async function handleEventResponse(enemy: Warrior | Mage): Promise<void> {
+async function handleEventResponse(enemy: Warrior | Mage): Promise<void> {
     try {
         if (enemy.health <= 20) {
             throw new Error(`${enemy.name} no tiene suficiente salud para participar en el evento.`);
