@@ -8,7 +8,7 @@ let charactersList: rol[] = [];
 function createCharacter(
     name: string,
     level: number,
-    health: number,
+    health: number ,
     experience: number = 0,
     inventory: string[] = []
 ): rol | void {
@@ -34,12 +34,9 @@ function createCharacter(
             charactersList.push(NewWarrior);
             return NewWarrior;
         case 3:
-            const items = readline.question("¿Cuál(es) su poder magico? (separados por coma) ");
-            const magicPower: string[] = items.split(",").map((item: string) => item.trim());
-
             let manaCalled = parseInt(readline.question("¿Cuánto mana tiene tu personaje?"));
             manaCalled = validation(manaCalled)
-            const NewMage = new Mage(name, level, health, experience, inventory, magicPower, manaCalled);
+            const NewMage = new Mage(name, level, health, experience, [], inventory, manaCalled);
             charactersList.push(NewMage);
             NewMage.mana = manaCalled;
             return NewMage;
@@ -128,14 +125,9 @@ function showMenu(): any {
         switch (option) {
             case "1":
                 let name = readline.question("¿Cuál es el nombre? ");
-                let level = parseInt(readline.question("¿Cuál es el nivel? "));
-                level = validation(level)
-                level = validation(level)
-                let health = parseFloat(readline.question("¿Cuál es el nivel de vida? "));
-                health = validation(health)
                 const items = readline.question("¿Cuál es el inventario?🏷️ (separados por coma) ");
                 const inventory = items ? items.split(",").map((item: string) => item.trim()) : [];
-                createCharacter(name, level, health, 0, inventory);
+                createCharacter(name, 1, 100, 0, inventory);
                 break;
             case "2":
                 listCharacters();
