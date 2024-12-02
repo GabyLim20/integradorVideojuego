@@ -1,3 +1,4 @@
+import { Character as rol } from "./characterModel";
 export enum MissionType {
     Main = "Main",
     Side = "Side",
@@ -48,62 +49,78 @@ export class Mission {
         }
     }
     getMissionAleator():void{
-        let descriptions: string[] = [
+        const descriptions: string[] = [
             "Encuentra a la reina",
             "Busca y recupera el anillo poderoso",
-            "Protege al pueblo",
             "Recupera el artefacto perdido"
 
         ]
-        let descriptionsSide: string[] = [
+        const descriptionsSide: string[] = [
             "Repara el puente de la aldea",
             "Investigar antiguas ruinas para descubrir los tesoros ocultos",
             "Recolecta suministros para el aldea",
-            "Captura a el bandido buscado"
             
         ]
-        let descriptionsEvent: string[] = [
+        const descriptionsEvent: string[] = [
             "Encuentra los huevos de pascua",
             "Recoge frutas mágicas durante la luna llena",
             "Construye un altar en el Festival de la Cosecha",
             "Búsqueda de reliquias para el Día de los Muertos"
         ]
         let value:string = "";
-        let  difficult:number = Math.floor(Math.random() * 8) + 1;
+        let  difficult:number = Math.floor(Math.random() * 3) + 1;
         
         if (this._type === MissionType.Main) {
             value = descriptions[Math.floor(Math.random() * descriptions.length)];
             this.reward = 3;
-        }else if (this._type === MissionType.Side) {
-            value = descriptions[Math.floor(Math.random() * descriptionsSide.length)];
+        } else if (this._type === MissionType.Side) {
+            value = descriptionsSide[Math.floor(Math.random() * descriptionsSide.length)];
             this.reward = 2;
-        }else if(this._type === MissionType.Event) {
-            value = descriptions[Math.floor(Math.random() * descriptionsEvent.length)];
+        } else if (this._type === MissionType.Event) {
+            value = descriptionsEvent[Math.floor(Math.random() * descriptionsEvent.length)];
             this.reward = 1;
-        }else {
-            throw  Error("Tipo de misión no válido.");
+        } else {
+            throw Error("Tipo de misión no válido.");
         }
-        if (this._difficulty <= 3) {
+        this.difficulty = difficult
+        if (difficult === 1) {
             console.log(`Misión fácil asignada al evento ${this.type}`);
-        } else if (this._difficulty <= 6) {
+        } else if (difficult === 2) {
             console.log(`Misión de dificultad media asignada al evento ${this.type}`);
         } else {
             console.log(`Misión difícil asignada al evento ${this.type}`);
         }
         this.description = value;
-        this.difficulty = difficult;
-
     }
     getExperienceReward(): number {
         switch (this.type) {
             case MissionType.Main:
                 return this.reward * 2 * this.difficulty;  
+
             case MissionType.Side:
                 return this.reward * this.difficulty;  
             case MissionType.Event:
                 return this.reward * 4 * this.difficulty;  
             default:
                 return 0;
+        }
+    }
+    getAleatoryWin(rol: rol):void{
+        let succes:number;
+        if (this.difficulty === 2) {
+            succes = 0.4; 
+        } else if (this.difficulty === 3) {
+            succes = 0.6; 
+        } else {
+            succes = 0.2;
+        }
+        let random= Math.random();
+
+        if (random <= succes) {
+            rol.win(this)
+            
+        } else {
+            rol.lose(this)  
         }
     }
     get type(): MissionType {

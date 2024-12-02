@@ -121,7 +121,9 @@ function showMenu(): any {
         console.log("3. Actualizar personaje");
         console.log("4. Eliminar personaje");
         console.log("5. Asignar Misión");
-        console.log("6. Salir");
+        console.log("6. Completar Misión");
+        console.log("7. Listado Misiones");
+        console.log("8. Salir");
         option = readline.question("Elige una opción: ");
         switch (option) {
             case "1":
@@ -147,7 +149,8 @@ function showMenu(): any {
                             nameSearch,
                             parseInt(readline.question("Nuevo nivel: ")),
                             parseInt(readline.question("Nueva salud: ")),
-                            readline.question("Nuevo inventario (separados por coma): ").split(',')
+                            parseInt(readline.question("Nueva experiencia: ")),
+                            readline.question("Nuevo inventario (separados por coma): ").split(','),
                         )
                     );
                 } else {
@@ -162,13 +165,24 @@ function showMenu(): any {
                 let nameAsign = readline.question("¿Cuál es el nombre? 🔍 ");
                 let mission = readline.question("¿Qué tipo de mision deseas?🚀(Main, Side, Event)\n")
                 assignMission(nameAsign, mission);
+                break;
             case "6":
+            let nameFound = readline.question("¿Cuál es el nombre? 🔍 ");
+            showMissions(nameFound);
+            let id = readline.question("¿Cuál es el la misión que deseas completar(Ingresa el número)? 🔍 ");
+            completeMission(nameFound,id)
+                break;
+            case "7":
+            let nameM = readline.question("¿Cuál es el nombre? 🔍 ");
+                showMissions(nameM);
+            break;
+            case "8":
                 console.log("Saliendo...");
                 break;
             default:
                 console.log("Opción no válida ❌, por favor elige nuevamente.🤔");
         }
-    } while (option !== "6");
+    } while (option !== "8");
 }
 
 function validation(value: number) {
@@ -183,9 +197,12 @@ function assignMission(name: string, missionType: type): void {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
     if (foudName) {
         if (Object.values(type).includes(missionType)) {
-            let newMission = new Mission("", missionType, 0, 0);
+            let newMission = new Mission("", missionType, 0, 0); /*Este newMission aqui getAleatoryWin*/
             newMission.getMissionAleator();
-            foudName.missions.push(newMission.description)
+            while (foudName.missions.some(mission => mission.description === newMission.description)) {
+                newMission.getMissionAleator();
+            }
+            foudName.missions.push(newMission)
             console.log(`${foudName.name} se te otorgo la misión: ${newMission.description} 🧩`);
         } else {
             console.log("Tipo de misión no válido.🚨");
@@ -194,5 +211,31 @@ function assignMission(name: string, missionType: type): void {
         console.log("No se encontró el personaje con el nombre proporcionado.🚨");
     }
 }
+function completeMission(name: string,id:number) {
+    let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());    
+    if (foudName) {
+        let mission = foudName.missions[id - 1]; 
+        if (mission) {
+            mission.getAleatoryWin(foudName);
+        }else {
+            console.log(`No se encontró la misión con el item: ${id}.`);
+        }
+
+    }else{
+        console.log("No se encontró el personaje con el nombre proporcionado.🚨");
+    };
+}
+function showMissions(name: string): void {
+    let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
+    if (foudName) {
+        console.log(`El ${foudName.name} tiene ${foudName.missions.length} misión(es) la(s) cual(es) son:`);
+        foudName.missions.forEach((mission, index) => {
+            console.log(`${index + 1}: ${mission.description}`);
+        });
+    } else {
+        console.log("No se encontró el personaje con el nombre proporcionado.🚨");
+    }
+}
+
 
 showMenu();

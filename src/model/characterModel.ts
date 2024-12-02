@@ -6,9 +6,9 @@ export class Character {
     private _health: number;
     private _experience: number;
     private _inventory: string[];
-    private _missions: string [];
+    private _missions: Mission[] = [];
     
-    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [],missions:string[] = []) {
+    constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [],missions:Mission[] = []) {
         this._name = name;
         this._level = level;
         this._health = health;
@@ -60,10 +60,10 @@ export class Character {
     public set inventory(value: string[]) {
         this._inventory = value;
     }
-    public get missions(): string[] {
+    public get missions(): Mission[] {
         return this._missions;
     }
-    public set missions(value: string[]) {
+    public set missions(value: Mission[]) {
         this._missions = value;
     }
     
@@ -81,8 +81,17 @@ export class Character {
     win(mission: Mission): void {
         const winExperience = mission.getExperienceReward();  
         this._experience += winExperience;
+        this.level += 1;
+        this.health += 15;
         console.log(`${this.name} bien hecho has completado con exito: "${mission.description}" y has ganado ${winExperience} puntos de experiencia.`);
     }
+    lose(mission: Mission): void { 
+        this.experience -= 5;
+        this.level -= 1;
+        this.health -= 15;
+        console.log(`Fallaste al intentar completar la misión: ${mission.description} y has perdido ${this.experience} puntos de experiencia.`);
+        
+    }
     
-
+    
 }
