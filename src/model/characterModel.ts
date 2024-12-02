@@ -6,7 +6,7 @@ export class Character {
     private _health: number;
     private _experience: number;
     private _inventory: string[];
-    private _missions: Mission[] = [];
+    _missions: Mission[] = [];
     
     constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [],missions:Mission[] = []) {
         this._name = name;
@@ -78,6 +78,7 @@ export class Character {
         }
     }
     
+    
     win(mission: Mission): void {
         const winExperience = mission.getExperienceReward();  
         this._experience += winExperience;
@@ -92,6 +93,7 @@ export class Character {
         console.log(`Fallaste al intentar completar la misión: ${mission.description} y has perdido ${this.experience} puntos de experiencia.`);
         
     }
+    
     
     
 }

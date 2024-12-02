@@ -5,7 +5,7 @@ import { Mission, MissionType as type } from "../model/missionModel";
 const readline = require("readline-sync");
 let charactersList: rol[] = [];
 
-function createCharacter(
+export function createCharacter(
     name: string,
     level: number,
     health: number ,
@@ -49,7 +49,14 @@ function createCharacter(
 
 }
 
-function listCharacters(): void {
+function validation(value: number) {
+    while (value <= 0 || isNaN(value)) {
+        console.log("El valor no puede ser 0 o estas usando letras, por favor ingresa un valor mayor.");
+        value = parseInt(readline.question("¿Cuál sería el valor del personaje? "));
+    }
+    return value;
+}
+export function listCharacters(): void {
     if (charactersList.length === 0) {
         console.log("No hay personajes creados.");
         return;
@@ -74,7 +81,7 @@ function listCharacters(): void {
     });
 }
 
-function updateCharacter(name: string, update: Character): void {
+export function updateCharacter(name: string, update: Character): void {
     let index = charactersList.findIndex(character =>
         character.name.trim().toLowerCase() === name.trim().toLowerCase()
     );
@@ -90,7 +97,7 @@ function updateCharacter(name: string, update: Character): void {
     }
 }
 
-function deleteCharacter(name: string): Character | void {
+export function deleteCharacter(name: string): Character | void {
     let indexOf = charactersList.findIndex(character =>
         character.name.trim().toLowerCase() === name.trim().toLowerCase()
     );
@@ -109,87 +116,11 @@ function deleteCharacter(name: string): Character | void {
     }
 }
 
-function showMenu(): any {
-    let option: string;
-    do {
-        console.log("\n--- Menú ---");
-        console.log("1. Crear personaje");
-        console.log("2. Listar personajes");
-        console.log("3. Actualizar personaje");
-        console.log("4. Eliminar personaje");
-        console.log("5. Asignar Misión");
-        console.log("6. Completar Misión");
-        console.log("7. Listado Misiones");
-        console.log("8. Salir");
-        option = readline.question("Elige una opción: ");
-        switch (option) {
-            case "1":
-                let name = readline.question("¿Cuál es el nombre? ");
-                const items = readline.question("¿Cuál es el inventario?🏷️ (separados por coma) ");
-                const inventory = items ? items.split(",").map((item: string) => item.trim()) : [];
-                createCharacter(name, 1, 100, 0, inventory);
-                break;
-            case "2":
-                listCharacters();
-                break;
-            case "3":
-                let nameSearch = readline.question("¿Cuál es el nombre del personaje a buscar? ");
-                if (charactersList.some(character => character.name.trim().toLowerCase() === nameSearch.trim().toLowerCase())) {
-                    updateCharacter(
-                        nameSearch,
-                        new Character(
-                            nameSearch,
-                            parseInt(readline.question("Nuevo nivel: ")),
-                            parseInt(readline.question("Nueva salud: ")),
-                            parseInt(readline.question("Nueva experiencia: ")),
-                            readline.question("Nuevo inventario (separados por coma): ").split(','),
-                        )
-                    );
-                } else {
-                    console.log(`Personaje con el nombre ${nameSearch} no encontrado.❌`);
-                }
-                break;
-            case "4":
-                let deleteByName = readline.question("¿Cuál es el nombre del personaje ha eliminar?😵 ");
-                deleteCharacter(deleteByName);
-                break;
-            case "5":
-                let nameAsign = readline.question("¿Cuál es el nombre? 🔍 ");
-                let mission = readline.question("¿Qué tipo de mision deseas?🚀(Main, Side, Event)\n")
-                assignMission(nameAsign, mission);
-                break;
-            case "6":
-            let nameFound = readline.question("¿Cuál es el nombre? 🔍 ");
-            showMissions(nameFound);
-            let id = readline.question("¿Cuál es el la misión que deseas completar(Ingresa el número)? 🔍 ");
-            completeMission(nameFound,id)
-                break;
-            case "7":
-            let nameM = readline.question("¿Cuál es el nombre? 🔍 ");
-                showMissions(nameM);
-            break;
-            case "8":
-                console.log("Saliendo...");
-                break;
-            default:
-                console.log("Opción no válida ❌, por favor elige nuevamente.🤔");
-        }
-    } while (option !== "8");
-}
-
-function validation(value: number) {
-    while (value <= 0 || isNaN(value)) {
-        console.log("El valor no puede ser 0 o estas usando letras, por favor ingresa un valor mayor.");
-        value = parseInt(readline.question("¿Cuál sería el valor del personaje? "));
-    }
-    return value;
-}
-
-function assignMission(name: string, missionType: type): void {
+export function assignMission(name: string, missionType: type): void {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
     if (foudName) {
         if (Object.values(type).includes(missionType)) {
-            let newMission = new Mission("", missionType, 0, 0); /*Este newMission aqui getAleatoryWin*/
+            let newMission = new Mission("", missionType, 0, 0);
             newMission.getMissionAleator();
             while (foudName.missions.some(mission => mission.description === newMission.description)) {
                 newMission.getMissionAleator();
@@ -203,6 +134,7 @@ function assignMission(name: string, missionType: type): void {
         console.log("No se encontró el personaje con el nombre proporcionado.🚨");
     }
 }
+
 function completeMission(name: string,id:number) {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());    
     if (foudName) {
@@ -217,7 +149,32 @@ function completeMission(name: string,id:number) {
         console.log("No se encontró el personaje con el nombre proporcionado.🚨");
     };
 }
-function showMissions(name: string): void {
+
+export function completeMission2(name: string, id: number) {
+    let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
+    if (foudName) {
+        let mission = foudName.missions[id - 1];
+        if (mission) {
+            let enemy: Warrior | Mage | undefined;
+            if (foudName instanceof Warrior) {
+                enemy = new Mage("Mesias", 1, 100, 0, [], ["Fuego"], 100);
+            } else if (foudName instanceof Mage) {
+                enemy = new Warrior("Mesias", 1, 100, 0, [], 100, 100);
+            } 
+            if (enemy) {
+                mission.getAleatoryWin(foudName);
+            } else {
+                completeMission(foudName.name,id)
+            }
+        } else {
+            console.log(`No se encontró la misión con el item: ${id}.`);
+        }
+    } else {
+        console.log("No se encontró el personaje con el nombre proporcionado.🚨");
+    }
+}
+
+export function showMissions(name: string): void {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
     if (foudName) {
         console.log(`El ${foudName.name} tiene ${foudName.missions.length} misión(es) la(s) cual(es) son:`);
@@ -229,5 +186,67 @@ function showMissions(name: string): void {
     }
 }
 
-
-showMenu();
+async function battle(character: Warrior | Mage, enemy: Warrior | Mage): Promise<void> {
+    try {
+      if (character.health <= 0) {
+        console.log(`${character.name} no tiene vida suficiente para pelear. Terminando la batalla.`);
+        return;
+      }
+      if (enemy.health <= 0) {
+        console.log(`${enemy.name} no tiene vida suficiente para pelear. Terminando la batalla.`);
+        return;
+      }
+      console.log(`¡La batalla comienza entre ${character.name} y ${enemy.name}!`);
+      while (character.health > 0 && enemy.health > 0) {
+        console.log("\nTurno del personaje:");
+        if (character instanceof Warrior && enemy instanceof Mage) {
+          character.attackEnemy(enemy); 
+        } else if (character instanceof Mage && enemy instanceof Warrior) {
+          character.spendMagic(enemy); 
+        }
+        if (enemy.health <= 0) {
+          console.log(`¡${enemy.name} ha sido derrotado!`);
+          break; 
+        }
+  
+        await new Promise(resolve => setTimeout(resolve, 1000));
+  
+        console.log("\nTurno del enemigo:");
+        if (enemy instanceof Warrior && character instanceof Mage) {
+          enemy.attackEnemy(character); 
+        } else if (enemy instanceof Mage && character instanceof Warrior) {
+          enemy.spendMagic(character); 
+        }
+          if (character.health <= 0) {
+          console.log(`¡${character.name} ha sido derrotado!`);
+          break; 
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    } catch (error) {
+      console.error('Ha ocurrido un error en la batalla:', error);
+    }
+  }
+  
+async function giveReward(character: Warrior | Mage): Promise<void> {
+    try {
+      console.log('¡Recibiendo recompensa...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`¡${character.name} ha recibido 50 puntos de experiencia y 10 monedas de oro!`);
+      character.experience+= 10; 
+    } catch (error) {
+      console.error('Error al otorgar la recompensa:', error);
+    }
+  }
+  async function handleEventResponse(enemy: Warrior | Mage): Promise<void> {
+    try {
+        if (enemy.health <= 20) {
+            throw new Error(`${enemy.name} no tiene suficiente salud para participar en el evento.`);
+        }
+        console.log(`${enemy.name} está decidiendo cómo responder al evento...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log(`${enemy.name} ha decidido participar en el evento.`);
+    } catch (error) {
+        console.error(error);
+    }
+}

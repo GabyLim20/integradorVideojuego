@@ -1,11 +1,15 @@
 import { Character as rol} from "./characterModel";
+import { Mage } from "./mageModel";
+import { Mission } from './missionModel'; 
+
 export class Warrior extends rol{
     private _attack: number;  
     private _defense: number;
     constructor(name: string, level: number, health: number, experience: number,inventory:string[] = [], attack: number,defense:number) {
         super(name, level, health, experience,inventory); 
         this._attack = attack;
-        this._defense = defense
+        this._defense = defense;
+
     }
     public get attack(): number {
         return this._attack
@@ -28,8 +32,16 @@ export class Warrior extends rol{
             this._attack = value;
         }
     }
-    public completeMission(missionType: string): void {
-        console.log(`${this.name} ha completado una misión de tipo ${missionType}`);
+    takeDamage(damage: number): void {
+        this.health -= damage;
+        console.log(`${this.name} recibió ${damage} puntos de daño. Salud restante: ${this.health}`);
     }
+    attackEnemy(enemy: Mage): void {
+        let damage = this.attack - enemy.mana;
+        damage = damage > 0 ? damage : 0; 
+        enemy.takeDamage(damage);
+        console.log(`${this.name} ataca a ${enemy.name} y le causa ${damage} puntos de daño.`);
+    }
+
 
 }

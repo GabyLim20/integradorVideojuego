@@ -1,4 +1,6 @@
 import { Character as rol } from "./characterModel";
+import { Warrior } from "./warriorModel";
+import { Mage } from "./mageModel";
 export enum MissionType {
     Main = "Main",
     Side = "Side",
@@ -105,7 +107,8 @@ export class Mission {
                 return 0;
         }
     }
-    getAleatoryWin(rol: rol):void{
+    
+    getAleatoryWin(rol: rol| Warrior | Mage):void{
         let succes:number;
         if (this.difficulty === 2) {
             succes = 0.4; 
