@@ -118,4 +118,10 @@ Es la base principal de nuestra api donde encontraras propiedades como:
 
 <img src="readmeImage/iAsign.png" width="300" alt="Descripción de la imagen">
 
+**Recursos Utilizados**
+
+[Sumar sin exceder un valor maximo](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/max)
+
+[Random item de un array](https://www.programiz.com/javascript/examples/get-random-item)
+
 Desarrollado con 💜 por Gaby by [Ada](https://adaitw.org/)

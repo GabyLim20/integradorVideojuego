@@ -2,8 +2,11 @@ import { Character, Character as rol } from "../model/characterModel";
 import { Mage } from "../model/mageModel";
 import { Warrior } from "../model/warriorModel";
 import { Mission, MissionType as type } from "../model/missionModel";
+import { battle,giveReward } from "./helpers";
 const readline = require("readline-sync");
 let charactersList: rol[] = [];
+const mageList: Mage[] = [];
+const warriorList: Warrior[] = [];
 
 export function createCharacter(
     name: string,
@@ -32,12 +35,14 @@ export function createCharacter(
             NewWarrior.attack = attackCalled;
             NewWarrior.defense = defenseCalled
             charactersList.push(NewWarrior);
+            warriorList.push(NewWarrior);
             return NewWarrior;
         case 3:
             let manaCalled = parseInt(readline.question("¿Cuánto mana tiene tu personaje?"));
             manaCalled = validation(manaCalled)
             const NewMage = new Mage(name, level, health, experience, [], inventory, manaCalled);
             charactersList.push(NewMage);
+            mageList.push(NewMage);
             NewMage.mana = manaCalled;
             return NewMage;
         default:
@@ -81,32 +86,49 @@ export function listCharacters(): void {
     });
 }
 
+
 export function updateCharacter(name: string, update: Character): void {
     let index = charactersList.findIndex(character =>
         character.name.trim().toLowerCase() === name.trim().toLowerCase()
     );
+    console.log(`Buscando personaje: ${name}, Índice encontrado: ${index}`); 
     if (index !== -1) {
         let character = charactersList[index];
         if (update.name) character.name = update.name;
         if (update.level) character.level = update.level;
         if (update.health) character.health = update.health;
         if (update.inventory) character.inventory = update.inventory;
+        
         console.log(`Personaje ${name} actualizado correctamente.`);
     } else {
-        console.log(`Personaje con el nombre ${name} no encontrado.❌`);
+        console.log(`Personaje con el nombre ${name} no encontrado.`);
     }
 }
+
 
 export function deleteCharacter(name: string): Character | void {
     let indexOf = charactersList.findIndex(character =>
         character.name.trim().toLowerCase() === name.trim().toLowerCase()
     );
+    let warriorIndex = warriorList.findIndex(character =>
+        character.name.trim().toLowerCase() === name.trim().toLowerCase()
+    );
+    if (warriorIndex !== -1) {
+        warriorList.splice(warriorIndex, 1);
+    }
+    let magoIndex = mageList.findIndex(character =>
+        character.name.trim().toLowerCase() === name.trim().toLowerCase()
+    );
+    if (magoIndex !== -1) {
+        mageList.splice(magoIndex, 1);
+    }
 
     if (indexOf !== -1) {
         let aprove = readline.question(`¿Estás seguro de eliminar ⚠️ ${name} de la lista 📝?\n 1.Sí\n 2.No \n`);
 
         if (parseInt(aprove) === 1) {
             charactersList.splice(indexOf, 1);
+            
             console.log(`El personaje ${name} ha sido eliminado correctamente.`);
         } else {
             console.log("No se ha eliminado, sigue en la lista.");
@@ -135,7 +157,7 @@ export function assignMission(name: string, missionType: type): void {
     }
 }
 
-function completeMissions(name: string,id:number) {
+function completeMissionGeneral(name: string,id:number) {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());    
     if (foudName) {
         let mission = foudName.missions[id - 1]; 
@@ -156,16 +178,20 @@ export function completeMission(name: string, id: number) {
         let mission = foudName.missions[id - 1];
         if (mission) {
             let enemy: Warrior | Mage | undefined;
-            if (foudName instanceof Warrior) {
-                enemy = new Mage("Mesias", 1, 100, 0, [], ["Fuego"], 100);
-            } else if (foudName instanceof Mage) {
-                enemy = new Warrior("Mesias", 1, 100, 0, [], 100, 100);
-            } 
-            if (enemy) {
-                mission.getAleatoryWin(foudName);
-            } else {
-                completeMission(foudName.name,id)
+            if (mageList.length === 0 || warriorList.length === 0) {
+                console.log("No hay contrincantes disponibles. Avanzando a completar la misión.");
+                completeMissionGeneral(foudName.name, id);  // Completar misión sin pelea
+                return; 
             }
+            if (foudName instanceof Warrior) {
+                enemy = mageList[Math.floor(Math.random() * mageList.length)];
+                console.log(`Se encontró con un mago llamada ${enemy.name}, trata de derrotarlo`);
+            } 
+            else if (foudName instanceof Mage) {
+                enemy = warriorList[Math.floor(Math.random() * warriorList.length)];
+                console.log(`Se encontró con un warrior llamado ${enemy.name}, trata de derrotarlo`);
+            }
+            mission.getAleatoryWin(foudName);
         } else {
             console.log(`No se encontró la misión con el item: ${id}.`);
         }
@@ -173,7 +199,6 @@ export function completeMission(name: string, id: number) {
         console.log("No se encontró el personaje con el nombre proporcionado.🚨");
     }
 }
-
 export function showMissions(name: string): void {
     let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
     if (foudName) {
@@ -186,65 +211,27 @@ export function showMissions(name: string): void {
     }
 }
 
-async function battle(character: Warrior | Mage, enemy: Warrior | Mage): Promise<void> {
-    try {
-      if (character.health <= 0) {
-        console.log(`${character.name} no tiene vida suficiente para pelear. Terminando la batalla.`);
-        return;
-      }
-      if (enemy.health <= 0) {
-        console.log(`${enemy.name} no tiene vida suficiente para pelear. Terminando la batalla.`);
-        return;
-      }
-      console.log(`¡La batalla comienza entre ${character.name} y ${enemy.name}!`);
-      while (character.health > 0 && enemy.health > 0) {
-        console.log("\nTurno del personaje:");
-        if (character instanceof Warrior && enemy instanceof Mage) {
-          character.attackEnemy(enemy); 
-        } else if (character instanceof Mage && enemy instanceof Warrior) {
-          character.spendMagic(enemy); 
-        }
-        if (enemy.health <= 0) {
-          console.log(`¡${enemy.name} ha sido derrotado!`);
-          break; 
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log("\nTurno del enemigo:");
-        if (enemy instanceof Warrior && character instanceof Mage) {
-          enemy.attackEnemy(character); 
-        } else if (enemy instanceof Mage && character instanceof Warrior) {
-          enemy.spendMagic(character); 
-        }
-          if (character.health <= 0) {
-          console.log(`¡${character.name} ha sido derrotado!`);
-          break; 
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-    } catch (error) {
-      console.error('Ha ocurrido un error en la batalla:', error);
-    }
-  }
+export async function batle(name: string) {
+    const foundCharacter = charactersList.find(character => character.name.toLowerCase() === name.toLowerCase());
   
-async function giveReward(character: Warrior | Mage): Promise<void> {
-    try {
-      console.log('¡Recibiendo recompensa...');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log(`¡${character.name} ha recibido 50 puntos de experiencia y 10 monedas de oro!`);
-      character.experience+= 10; 
-    } catch (error) {
-      console.error('Error al otorgar la recompensa:', error);
+    if (foundCharacter) {
+      let enemy: Warrior | Mage;
+      if (mageList.length === 0 || mageList.length === 0) {
+        console.log('No hay enemigo disponibles para luchar contra ti.');
+        return; 
+      }
+      if (foundCharacter instanceof Warrior) {
+        enemy = mageList[Math.floor(Math.random() * mageList.length)];
+        console.log(`${foundCharacter.name} es un Guerrero. El enemigo es un Mago: ${enemy.name}`);
+      } else if (foundCharacter instanceof Mage) {
+        enemy = warriorList[Math.floor(Math.random() * warriorList.length)];
+        console.log(`${foundCharacter.name} es un Mago. El enemigo se un Guerrero: ${enemy.name}`);
+      } else {
+        console.log('El personaje no es válido');
+        return;
+      }
+        await battle(foundCharacter as Warrior | Mage, enemy);
+    } else {
+      console.log('El personaje no fue encontrado en la lista.');
     }
   }
-  async function handleEventResponse(enemy: Warrior | Mage): Promise<void> {
-    try {
-        if (enemy.health <= 20) {
-            throw new Error(`${enemy.name} no tiene suficiente salud para participar en el evento.`);
-        }
-        console.log(`${enemy.name} está decidiendo cómo responder al evento...`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log(`${enemy.name} ha decidido participar en el evento.`);
-    } catch (error) {
-        console.error(error);
-    }
-}

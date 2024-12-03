@@ -82,14 +82,14 @@ export class Character {
     win(mission: Mission): void {
         const winExperience = mission.getExperienceReward();  
         this._experience += winExperience;
-        this.level += 1;
-        this.health += 15;
+        this.level = Math.min(this.level + 1, 100);
+        this.health = Math.min(this.health + 15, 100);
         console.log(`${this.name} bien hecho has completado con exito: "${mission.description}" y has ganado ${winExperience} puntos de experiencia.`);
     }
     lose(mission: Mission): void { 
-        this.experience -= 5;
-        this.level -= 1;
-        this.health -= 15;
+        this.experience = Math.max(this.experience - 5, 0);
+        this.level = Math.max(this.level - 1, 0);
+        this.health = Math.max(this.health - 15, 0);
         console.log(`Fallaste al intentar completar la misión: ${mission.description} y has perdido ${this.experience} puntos de experiencia.`);
         
     }

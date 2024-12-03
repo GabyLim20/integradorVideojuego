@@ -1,9 +1,10 @@
 import { Character, Character as rol } from "../model/characterModel";
-import { createCharacter,listCharacters,updateCharacter,deleteCharacter,assignMission,showMissions,completeMission } from "../controller/gameLogic";
+import { createCharacter,listCharacters,updateCharacter,deleteCharacter,assignMission,showMissions,completeMission,batle } from "../controller/gameLogic";
+
 const readline = require("readline-sync");
 let charactersList: rol[] = [];
 
-function showMenu(): any {
+async function showMenu():Promise <void> {
     let option: string;
     do {
         console.log("\n--- Menú ---");
@@ -14,7 +15,8 @@ function showMenu(): any {
         console.log("5. Asignar Misión");
         console.log("6. Completar Misión");
         console.log("7. Listado Misiones");
-        console.log("8. Salir");
+        console.log("8. Batalla");
+        console.log("9. Salir");
         option = readline.question("Elige una opción: ");
         switch (option) {
             case "1":
@@ -28,7 +30,12 @@ function showMenu(): any {
                 break;
             case "3":
                 let nameSearch = readline.question("¿Cuál es el nombre del personaje a buscar? ");
-                if (charactersList.some(character => character.name.trim().toLowerCase() === nameSearch.trim().toLowerCase())) {
+                console.log(`Buscando personaje: ${nameSearch}`); 
+                let foundCharacter = charactersList.find(character =>
+                    character.name.trim().toLowerCase() === nameSearch.trim().toLowerCase()
+                );
+                if (foundCharacter) {
+                    console.log(`Personaje encontrado: ${nameSearch}`);  
                     updateCharacter(
                         nameSearch,
                         new Character(
@@ -44,30 +51,34 @@ function showMenu(): any {
                 }
                 break;
             case "4":
-                let deleteByName = readline.question("¿Cuál es el nombre del personaje ha eliminar?😵 ");
+                const deleteByName = readline.question("¿Cuál es el nombre del personaje ha eliminar?😵 ");
                 deleteCharacter(deleteByName);
                 break;
             case "5":
-                let nameAsign = readline.question("¿Cuál es el nombre? 🔍 ");
-                let mission = readline.question("¿Qué tipo de mision deseas?🚀(Main, Side, Event)\n")
+                const nameAsign = readline.question("¿Cuál es el nombre? 🔍 ");
+                const mission = readline.question("¿Qué tipo de mision deseas?🚀(Main, Side, Event)\n")
                 assignMission(nameAsign, mission);
                 break;
             case "6":
-            let nameFound = readline.question("¿Cuál es el nombre? 🔍 ");
+                const nameFound = readline.question("¿Cuál es el nombre? 🔍 ");
             showMissions(nameFound);
-            let id = readline.question("¿Cuál es el la misión que deseas completar(Ingresa el número)? 🔍 ");
+            const id = readline.question("¿Cuál es el la misión que deseas completar(Ingresa el número)? 🔍 ");
             completeMission(nameFound,id)
                 break;
             case "7":
-            let nameM = readline.question("¿Cuál es el nombre? 🔍 ");
+                const nameM = readline.question("¿Cuál es el nombre? 🔍 ");
                 showMissions(nameM);
             break;
             case "8":
+            const user = await readline.question("¿Cuál es el nombre? ");
+            batle(user)
+            break;
+            case "9":
                 console.log("Saliendo...");
                 break;
             default:
                 console.log("Opción no válida ❌, por favor elige nuevamente.🤔");
         }
-    } while (option !== "8");
+    } while (option !== "9");
 }
-
+showMenu();
