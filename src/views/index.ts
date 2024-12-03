@@ -79,7 +79,6 @@ async function showMenu():Promise <void> {
             batle(user)
             break;
             case "9":
-                console.log("Continuar pelea...");
                 break;
             default:
                 console.log("Opción no válida ❌, por favor elige nuevamente.🤔");
