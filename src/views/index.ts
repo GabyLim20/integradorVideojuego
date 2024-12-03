@@ -1,10 +1,15 @@
 import { Character, Character as rol } from "../model/characterModel";
-import { createCharacter,listCharacters,updateCharacter,deleteCharacter,assignMission,showMissions,completeMission,batle } from "../controller/gameLogic";
+import { createCharacter,listCharacters,updateCharacter,deleteCharacter,assignMission,showMissions,completeMission2,batle } from "../controller/gameLogic";
 
 const readline = require("readline-sync");
 let charactersList: rol[] = [];
+let gameRunning = true;
 
 async function showMenu():Promise <void> {
+    if (!gameRunning) {
+        console.log("El juego ha terminado.");
+        return;
+    }
     let option: string;
     do {
         console.log("\n--- Menú ---");
@@ -16,7 +21,7 @@ async function showMenu():Promise <void> {
         console.log("6. Completar Misión");
         console.log("7. Listado Misiones");
         console.log("8. Batalla");
-        console.log("9. Salir");
+        console.log("9. Continuar pelea y salir");
         option = readline.question("Elige una opción: ");
         switch (option) {
             case "1":
@@ -63,7 +68,7 @@ async function showMenu():Promise <void> {
                 const nameFound = readline.question("¿Cuál es el nombre? 🔍 ");
             showMissions(nameFound);
             const id = readline.question("¿Cuál es el la misión que deseas completar(Ingresa el número)? 🔍 ");
-            completeMission(nameFound,id)
+            completeMission2(nameFound,id)
                 break;
             case "7":
                 const nameM = readline.question("¿Cuál es el nombre? 🔍 ");
@@ -74,7 +79,7 @@ async function showMenu():Promise <void> {
             batle(user)
             break;
             case "9":
-                console.log("Saliendo...");
+                console.log("Continuar pelea...");
                 break;
             default:
                 console.log("Opción no válida ❌, por favor elige nuevamente.🤔");

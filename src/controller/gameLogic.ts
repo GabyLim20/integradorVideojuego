@@ -7,6 +7,7 @@ const readline = require("readline-sync");
 let charactersList: rol[] = [];
 const mageList: Mage[] = [];
 const warriorList: Warrior[] = [];
+let gameRunning = true;
 
 export function createCharacter(
     name: string,
@@ -50,6 +51,7 @@ export function createCharacter(
             return error;
     }
     charactersList.push(character);
+    
     return character;
 
 }
@@ -192,6 +194,34 @@ export function completeMission(name: string, id: number) {
                 console.log(`Se encontró con un warrior llamado ${enemy.name}, trata de derrotarlo`);
             }
             mission.getAleatoryWin(foudName);
+            
+        } else {
+            console.log(`No se encontró la misión con el item: ${id}.`);
+        }
+    } else {
+        console.log("No se encontró el personaje con el nombre proporcionado.🚨");
+    }
+}
+export function completeMission2(name: string, id: number) {
+    let foudName = charactersList.find(names => names.name.toLowerCase() === name.toLowerCase());
+    
+    if (foudName) {
+        let mission = foudName.missions[id - 1];
+        if (mission) {
+            let enemy: Warrior | Mage | undefined;
+            if (mageList.length === 0 || warriorList.length === 0) {
+                console.log("No hay contrincantes disponibles. Avanzando a completar la misión.");
+                completeMission(foudName.name, id); 
+                return; 
+            }
+            if (foudName instanceof Warrior) {
+                enemy = mageList[Math.floor(Math.random() * mageList.length)];
+            } 
+            else if (foudName instanceof Mage) {
+                enemy = warriorList[Math.floor(Math.random() * warriorList.length)];
+            }
+            
+            mission.getAleatoryWin(foudName);
         } else {
             console.log(`No se encontró la misión con el item: ${id}.`);
         }
@@ -211,27 +241,43 @@ export function showMissions(name: string): void {
     }
 }
 
-export async function batle(name: string) {
+export async function batle(name: string): Promise<void> {
     const foundCharacter = charactersList.find(character => character.name.toLowerCase() === name.toLowerCase());
-  
+
     if (foundCharacter) {
-      let enemy: Warrior | Mage;
-      if (mageList.length === 0 || mageList.length === 0) {
-        console.log('No hay enemigo disponibles para luchar contra ti.');
-        return; 
-      }
-      if (foundCharacter instanceof Warrior) {
-        enemy = mageList[Math.floor(Math.random() * mageList.length)];
-        console.log(`${foundCharacter.name} es un Guerrero. El enemigo es un Mago: ${enemy.name}`);
-      } else if (foundCharacter instanceof Mage) {
-        enemy = warriorList[Math.floor(Math.random() * warriorList.length)];
-        console.log(`${foundCharacter.name} es un Mago. El enemigo se un Guerrero: ${enemy.name}`);
-      } else {
-        console.log('El personaje no es válido');
-        return;
-      }
+        let enemy: Warrior | Mage;
+        if (mageList.length === 0 || warriorList.length === 0) {
+            console.log('No hay enemigo disponibles para luchar contra ti.');
+            gameRunning = false;
+            return;
+        }
+
+        // Elije el enemigo basado en el tipo de personaje
+        if (foundCharacter instanceof Warrior) {
+            enemy = mageList[Math.floor(Math.random() * mageList.length)];
+            console.log(`${foundCharacter.name} es un Guerrero. El enemigo es un Mago: ${enemy.name}`);
+        } else if (foundCharacter instanceof Mage) {
+            enemy = warriorList[Math.floor(Math.random() * warriorList.length)];
+            console.log(`${foundCharacter.name} es un Mago. El enemigo es un Guerrero: ${enemy.name}`);
+        } else {
+            console.log('El personaje no es válido');
+            gameRunning = false;
+            return;
+        }
+
+        // Ejecutar la batalla
         await battle(foundCharacter as Warrior | Mage, enemy);
+
+        // Tras la batalla, si el personaje sigue vivo, dar recompensa
+        if (foundCharacter.health > 0) {
+            console.log(`¡${foundCharacter.name} ha ganado la batalla!`);
+            await giveReward(foundCharacter);
+        } else {
+            console.log(`¡${foundCharacter.name} ha perdido la batalla!`);
+        }
     } else {
-      console.log('El personaje no fue encontrado en la lista.');
+        console.log('El personaje no fue encontrado en la lista.');
+        gameRunning = false;
     }
-  }
+}
+
